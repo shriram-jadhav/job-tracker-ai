@@ -30,3 +30,15 @@ class Application(models.Model):
 
     def __str__(self):
         return f"{self.role} at {self.company} ({self.user.email})"
+    
+class MLResult(models.Model):
+    application      = models.OneToOneField(Application, on_delete=models.CASCADE, related_name='ml_result')
+    fit_score        = models.FloatField(null=True, blank=True)
+    interview_prob   = models.FloatField(null=True, blank=True)
+    skill_gaps       = models.JSONField(default=list)
+    shap_values      = models.JSONField(default=dict)
+    created_at       = models.DateTimeField(auto_now_add=True)
+    updated_at       = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"ML Result for {self.application}"
