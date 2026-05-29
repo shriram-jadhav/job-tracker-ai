@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'applications',
     'django_filters',
+    'resumes',
 ]
 
 MIDDLEWARE = [
@@ -154,3 +155,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS':  True,
     'BLACKLIST_AFTER_ROTATION': True,
 }
+
+# media file config
+MEDIA_URL  = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
