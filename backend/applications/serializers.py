@@ -5,7 +5,7 @@ from .models import Application, MLResult
 class MLResultSerializer(serializers.ModelSerializer):
     class Meta:
         model  = MLResult
-        fields = ['fit_score', 'interview_prob', 'skill_gaps']
+        fields = ['fit_score', 'interview_prob', 'skill_gaps', 'shap_values']
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
