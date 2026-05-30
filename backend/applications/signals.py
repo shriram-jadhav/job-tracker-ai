@@ -17,22 +17,26 @@ def score_application(sender, instance, **kwargs):
 
         from resumes.scorer import score_resume_jd, get_skill_gaps
         from resumes.predictor import predict_interview_probability
+        from resumes.suggestions import generate_suggestions
         from .models import MLResult
 
-        # ── Fit score ─────────────────────────────────────────
+        # ── Fit score + gaps ──────────────────────────────────
         score = score_resume_jd(resume.raw_text, instance.jd_text)
         gaps  = get_skill_gaps(resume.skills, instance.jd_text)
 
-        # ── Interview probability ─────────────────────────────
-        skills_count     = len(resume.skills)
-        skill_gaps_count = len(gaps)
-        experience_yrs   = resume.experience_yrs
-
+        # ── Interview probability + SHAP ──────────────────────
         prob, shap_summary = predict_interview_probability(
             fit_score        = score,
-            experience_yrs   = experience_yrs,
-            skills_count     = skills_count,
-            skill_gaps_count = skill_gaps_count,
+            experience_yrs   = resume.experience_yrs,
+            skills_count     = len(resume.skills),
+            skill_gaps_count = len(gaps),
+        )
+
+        # ── Suggestions ───────────────────────────────────────
+        suggestions = generate_suggestions(
+            resume_text = resume.raw_text,
+            jd_text     = instance.jd_text,
+            skill_gaps  = gaps,
         )
 
         # ── Save everything ───────────────────────────────────
@@ -45,6 +49,7 @@ def score_application(sender, instance, **kwargs):
                 'skill_gaps':     gaps,
                 'interview_prob': prob,
                 'shap_values':    shap_summary,
+                'suggestions':    suggestions,
             }
         )
 
